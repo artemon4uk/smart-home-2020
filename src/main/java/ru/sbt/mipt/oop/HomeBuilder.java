@@ -13,16 +13,6 @@ import java.util.Arrays;
 public class HomeBuilder {
 
     public static void main(String[] args) throws IOException {
-        SmartHome smartHome = initSmartHome();
-
-        String jsonString = getJson(smartHome);
-        System.out.println(jsonString);
-
-        Path path = Paths.get("output.js");
-        printPath(jsonString, path);
-    }
-
-    private static SmartHome initSmartHome() {
         Room kitchen = new Room(Arrays.asList(new Light("1", false), new Light("2", true)),
                 Arrays.asList(new Door(false, "1")),
                 "kitchen");
@@ -35,18 +25,14 @@ public class HomeBuilder {
         Room hall = new Room(Arrays.asList(new Light("7", false), new Light("8", false), new Light("9", false)),
                 Arrays.asList(new Door(false, "4")),
                 "hall");
-        return new SmartHome(Arrays.asList(kitchen, bathroom, bedroom, hall));
-    }
-
-    private static void printPath(String jsonString, Path path) throws IOException {
+        SmartHome smartHome = new SmartHome(Arrays.asList(kitchen, bathroom, bedroom, hall));
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonString = gson.toJson(smartHome);
+        System.out.println(jsonString);
+        Path path = Paths.get("output.js");
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             writer.write(jsonString);
         }
-    }
-
-    private static String getJson(SmartHome smartHome) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(smartHome);
     }
 
 }
