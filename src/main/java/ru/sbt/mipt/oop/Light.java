@@ -1,6 +1,6 @@
 package ru.sbt.mipt.oop;
 
-public class Light implements HomeObject {
+public class Light implements HomeObject, Actionable {
     private final String id;
     private boolean isOn;
 
@@ -9,6 +9,7 @@ public class Light implements HomeObject {
         this.isOn = isOn;
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -16,5 +17,10 @@ public class Light implements HomeObject {
     @Override
     public void setState(boolean on) {
         isOn = on;
+    }
+
+    @Override
+    public void execute(Action action) {
+        action.execute(this);
     }
 }

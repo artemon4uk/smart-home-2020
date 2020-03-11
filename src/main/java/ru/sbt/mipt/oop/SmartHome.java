@@ -1,11 +1,17 @@
 package ru.sbt.mipt.oop;
 
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static ru.sbt.mipt.oop.SensorEventType.*;
+import static ru.sbt.mipt.oop.SensorEventType.DOOR_OPEN;
+import static ru.sbt.mipt.oop.SensorEventType.LIGHT_ON;
 
-public class SmartHome {
+public class SmartHome implements Actionable {
     Collection<Room> rooms;
 
     public SmartHome() {
@@ -16,74 +22,37 @@ public class SmartHome {
         this.rooms = rooms;
     }
 
-    private static boolean isDoor(SensorEvent event) {
-        return event.getType() == DOOR_OPEN || event.getType() == DOOR_CLOSED;
-    }
-
-    private static boolean isLight(SensorEvent event) {
-        return event.getType() == LIGHT_ON || event.getType() == LIGHT_OFF;
-    }
-
-    private static void doorEvent(SmartHome smartHome, SensorEvent event, Room room, Door door) {
-        if (door.getId().equals(event.getObjectId())) {
-            if (event.getType() == DOOR_OPEN) {
-                door.setState(true);
-                System.out.println("Door " + door.getId() + " in room " + room.getName() + " was opened.");
-            } else {
-                door.setState(false);
-                System.out.println("Door " + door.getId() + " in room " + room.getName() + " was closed.");
-                if (room.getName().equals("hall")) {
-                    setOffAllLight(smartHome);
-                }
-            }
-        }
-    }
-
-    private static void lightEvent(SensorEvent event, Room room, Light light) {
-        if (light.getId().equals(event.getObjectId())) {
-            if (event.getType() == LIGHT_ON) {
-                light.setState(true);
-                System.out.println("Light " + light.getId() + " in room " + room.getName() + " was turned on.");
-            } else {
-                light.setState(false);
-                System.out.println("Light " + light.getId() + " in room " + room.getName() + " was turned off.");
-            }
-        }
-    }
-
-    private static void setOffAllLight(SmartHome smartHome) {
-        for (Room homeRoom : smartHome.getRooms()) {
-            for (Light light : homeRoom.getLights()) {
-                light.setState(false);
-                SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
-                sendCommand(command);
-            }
-        }
-    }
-
     private static void handleDoorEvents(SmartHome smartHome, SensorEvent event) {
-        if (isDoor(event)) {
+        if (event.isDoor()) {
             // событие от двери
             for (Room room : smartHome.getRooms()) {
                 for (Door door : room.getDoors()) {
-                    doorEvent(smartHome, event, room, door);
+                    DoorEventProcessor doorEventProcessor = new DoorEventProcessor(smartHome);
+                    doorEventProcessor.handle(event, room, door);
                 }
             }
         }
     }
 
-    private static void sendCommand(SensorCommand command) {
+    public static void sendCommand(SensorCommand command) {
         System.out.println("Pretent we're sending command " + command);
     }
 
     private static void handleLightEvents(SmartHome smartHome, SensorEvent event) {
-        if (isLight(event)) {
+        if (event.isLight()) {
             for (Room room : smartHome.getRooms()) {
                 for (Light light : room.getLights()) {
-                    lightEvent(event, room, light);
+                    LightEventProcessor lightEventProcessor = new LightEventProcessor(smartHome);
+                    lightEventProcessor.handle(event, room, light);
                 }
             }
         }
+    }
+
+    public static SmartHome getSmartHome() throws IOException {
+        Gson gson = new Gson();
+        String json = new String(Files.readAllBytes(Paths.get("smart-home-1.js")));
+        return gson.fromJson(json, SmartHome.class);
     }
 
     public void addRoom(Room room) {
@@ -98,5 +67,12 @@ public class SmartHome {
         System.out.println("Got event: " + event);
         handleLightEvents(this, event);
         handleDoorEvents(this, event);
+    }
+
+    @Override
+    public void execute(Action action) {
+        for (Room room : rooms) {
+            room.execute(action);
+        }
     }
 }

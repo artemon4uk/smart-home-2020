@@ -1,6 +1,6 @@
 package ru.sbt.mipt.oop;
 
-public class Door implements HomeObject {
+public class Door implements Actionable, HomeObject {
     private final String id;
     private boolean isOpen;
 
@@ -9,6 +9,7 @@ public class Door implements HomeObject {
         this.id = id;
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -16,5 +17,10 @@ public class Door implements HomeObject {
     @Override
     public void setState(boolean on) {
         isOpen = on;
+    }
+
+    @Override
+    public void execute(Action action) {
+        action.execute(this);
     }
 }
