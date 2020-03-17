@@ -31,5 +31,4 @@ public class LightEventProcessor implements EventHandler {
             }
         }
     }
-
 }

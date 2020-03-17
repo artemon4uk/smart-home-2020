@@ -8,10 +8,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static ru.sbt.mipt.oop.SensorEventType.DOOR_OPEN;
-import static ru.sbt.mipt.oop.SensorEventType.LIGHT_ON;
+import static ru.sbt.mipt.oop.SensorEventType.*;
 
-public class SmartHome implements Actionable {
+public class SmartHome {
     Collection<Room> rooms;
 
     public SmartHome() {
@@ -22,8 +21,16 @@ public class SmartHome implements Actionable {
         this.rooms = rooms;
     }
 
+    private static boolean isDoor(SensorEvent event) {
+        return event.getType() == DOOR_OPEN || event.getType() == DOOR_CLOSED;
+    }
+
+    private static boolean isLight(SensorEvent event) {
+        return event.getType() == LIGHT_ON || event.getType() == LIGHT_OFF;
+    }
+
     private static void handleDoorEvents(SmartHome smartHome, SensorEvent event) {
-        if (event.isDoor()) {
+        if (isDoor(event)) {
             // событие от двери
             for (Room room : smartHome.getRooms()) {
                 for (Door door : room.getDoors()) {
@@ -34,12 +41,12 @@ public class SmartHome implements Actionable {
         }
     }
 
-    public static void sendCommand(SensorCommand command) {
+    static void sendCommand(SensorCommand command) {
         System.out.println("Pretent we're sending command " + command);
     }
 
     private static void handleLightEvents(SmartHome smartHome, SensorEvent event) {
-        if (event.isLight()) {
+        if (isLight(event)) {
             for (Room room : smartHome.getRooms()) {
                 for (Light light : room.getLights()) {
                     LightEventProcessor lightEventProcessor = new LightEventProcessor(smartHome);
@@ -69,10 +76,4 @@ public class SmartHome implements Actionable {
         handleDoorEvents(this, event);
     }
 
-    @Override
-    public void execute(Action action) {
-        for (Room room : rooms) {
-            room.execute(action);
-        }
-    }
 }
