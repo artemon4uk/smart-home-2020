@@ -9,6 +9,10 @@ public class Door implements Actionable, HomeObject {
         this.id = id;
     }
 
+    public boolean isOpen() {
+        return isOpen;
+    }
+
     @Override
     public String getId() {
         return id;
