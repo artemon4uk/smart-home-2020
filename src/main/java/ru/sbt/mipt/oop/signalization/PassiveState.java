@@ -19,6 +19,6 @@ public class PassiveState implements State {
 
     @Override
     public void activateAlarmMode() {
-        //Ничего не делать.
+        //Так как мы не можем перевести из пассивного состояния в тревожное, то "Ничего не делать".
     }
 }
