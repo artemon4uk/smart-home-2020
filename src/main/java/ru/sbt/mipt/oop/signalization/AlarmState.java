@@ -1,9 +1,12 @@
-package ru.sbt.mipt.oop;
+package ru.sbt.mipt.oop.signalization;
 
-public class AlarmState extends State {
+public class AlarmState implements State {
+    private final Signalization signalization;
+    private final String code;
 
-    public AlarmState(Signalization signalization) {
-        super(signalization);
+    public AlarmState(Signalization signalization, String code) {
+        this.signalization = signalization;
+        this.code = code;
     }
 
     @Override
@@ -13,7 +16,7 @@ public class AlarmState extends State {
 
     @Override
     public void deactivate(String code) {
-        if (signalization.checkEqualsCode(code)) {
+        if (this.code.equals(code)) {
             signalization.changeState(new PassiveState(signalization));
         } // Иначе остается в AlarmState.
     }

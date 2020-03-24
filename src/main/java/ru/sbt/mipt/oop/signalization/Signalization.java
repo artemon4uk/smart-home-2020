@@ -1,9 +1,11 @@
-package ru.sbt.mipt.oop;
+package ru.sbt.mipt.oop.signalization;
+
+import ru.sbt.mipt.oop.Action;
+import ru.sbt.mipt.oop.Actionable;
 
 public class Signalization implements Actionable {
 
     private State state;
-    private String code;
 
     public Signalization() {
         this.state = new PassiveState(this);    
@@ -13,16 +15,8 @@ public class Signalization implements Actionable {
         return state;
     }
 
-    public void changeState(State state) {
+    protected void changeState(State state) {
         this.state = state;
-    }
-
-    public void changeCode(String code) {
-        this.code = code;
-    }
-
-    public boolean checkEqualsCode(String newCode) {
-        return code.equals(newCode);
     }
 
     public void activate(String code) {

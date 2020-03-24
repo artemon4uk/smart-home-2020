@@ -1,5 +1,7 @@
 package ru.sbt.mipt.oop;
 
+import ru.sbt.mipt.oop.signalization.Signalization;
+
 public class SignalizationEventProcessor implements EventHandler {
     private final SmartHome smartHome;
 

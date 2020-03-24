@@ -1,5 +1,7 @@
 package ru.sbt.mipt.oop;
 
+import ru.sbt.mipt.oop.signalization.Signalization;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,7 +16,7 @@ public class SmartHome implements Actionable {
 
     public SmartHome(Collection<Room> rooms) {
         this.rooms = rooms;
-//        this.signalization = new Signalization();
+        this.signalization = null;
     }
 
     public SmartHome(Collection<Room> rooms, Signalization signalization) {

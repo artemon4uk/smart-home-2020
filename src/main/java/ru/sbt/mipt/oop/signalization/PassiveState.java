@@ -1,15 +1,15 @@
-package ru.sbt.mipt.oop;
+package ru.sbt.mipt.oop.signalization;
 
-public class PassiveState extends State {
+public class PassiveState implements State {
+    private final Signalization signalization;
 
     public PassiveState(Signalization signalization) {
-        super(signalization);
+        this.signalization = signalization;
     }
 
     @Override
     public void activate(String code) {
-        signalization.changeCode(code);
-        signalization.changeState(new ActiveState(signalization));
+        signalization.changeState(new ActiveState(signalization, code));
     }
 
     @Override
@@ -19,6 +19,6 @@ public class PassiveState extends State {
 
     @Override
     public void activateAlarmMode() {
-        signalization.changeState(new AlarmState(signalization));
+        //Ничего не делать.
     }
 }

@@ -1,6 +1,10 @@
 package ru.sbt.mipt.oop;
 
 import org.junit.Test;
+import ru.sbt.mipt.oop.signalization.ActiveState;
+import ru.sbt.mipt.oop.signalization.AlarmState;
+import ru.sbt.mipt.oop.signalization.PassiveState;
+import ru.sbt.mipt.oop.signalization.Signalization;
 
 import static org.junit.Assert.assertTrue;
 
@@ -41,15 +45,6 @@ public class SignalizationTest {
 
         signalization.activate(code);
         signalization.deactivate(wrongCode);
-
-        assertTrue(signalization.getState() instanceof AlarmState);
-    }
-
-    @Test
-    public void checkAlarmMode() {
-        Signalization signalization = new Signalization();
-
-        signalization.activateAlarmMode();
 
         assertTrue(signalization.getState() instanceof AlarmState);
     }
