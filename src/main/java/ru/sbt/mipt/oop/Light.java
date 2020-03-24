@@ -9,9 +9,6 @@ public class Light implements HomeObject, Actionable {
         this.isOn = isOn;
     }
 
-    public boolean isOn() {
-        return isOn;
-    }
 
     @Override
     public String getId() {
