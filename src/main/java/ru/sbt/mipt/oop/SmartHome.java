@@ -8,9 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static ru.sbt.mipt.oop.SensorEventType.*;
-
-public class SmartHome {
+public class SmartHome implements Actionable {
     Collection<Room> rooms;
 
     public SmartHome() {
@@ -70,10 +68,12 @@ public class SmartHome {
         return rooms;
     }
 
-    public void startProcess(SensorEvent event) {
-        System.out.println("Got event: " + event);
-        handleLightEvents(this, event);
-        handleDoorEvents(this, event);
-    }
+    @Override
+    public void execute(Action action) {
+        action.execute(this);
 
+        for (Room room : rooms) {
+            room.execute(action);
+        }
+    }
 }

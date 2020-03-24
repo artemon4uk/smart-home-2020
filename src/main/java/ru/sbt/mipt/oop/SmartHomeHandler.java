@@ -1,11 +1,26 @@
 package ru.sbt.mipt.oop;
 
-public class SmartHomeHandler {
+import java.util.Collection;
 
-    public static void startHandle(SmartHome smartHome, SensorEvent event) {
+public class SmartHomeHandler {
+    private Collection<EventHandler> eventHandlers;
+
+    public SmartHomeHandler(Collection<EventHandler> eventHandlers) {
+        this.eventHandlers = eventHandlers;
+    }
+
+    public void startHandle() {
+        SensorEvent event = GeneratorEvent.getNextSensorEvent();
         while (event != null) {
-            smartHome.startProcess(event);
+            startProcess(event);
             event = GeneratorEvent.getNextSensorEvent();
+        }
+    }
+
+    public void startProcess(SensorEvent event) {
+        System.out.println("Got event: " + event);
+        for (EventHandler eventHandler : eventHandlers) {
+            eventHandler.handle(event);
         }
     }
 }

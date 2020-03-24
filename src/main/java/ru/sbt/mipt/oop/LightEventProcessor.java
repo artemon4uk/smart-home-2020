@@ -1,34 +1,46 @@
 package ru.sbt.mipt.oop;
 
+import static ru.sbt.mipt.oop.SensorEventType.LIGHT_OFF;
 import static ru.sbt.mipt.oop.SensorEventType.LIGHT_ON;
 
 public class LightEventProcessor implements EventHandler {
-    SmartHome smartHome;
+    private final SmartHome smartHome;
 
     public LightEventProcessor(SmartHome smartHome) {
         this.smartHome = smartHome;
     }
 
-    @Override
-    public void handle(SensorEvent event, Room room, HomeObject light) {
-        if (light.getId().equals(event.getObjectId())) {
-            if (event.getType() == LIGHT_ON) {
-                light.setState(true);
-                System.out.println("Light " + light.getId() + " in room " + room.getName() + " was turned on.");
-            } else {
-                light.setState(false);
-                System.out.println("Light " + light.getId() + " in room " + room.getName() + " was turned off.");
+    private void handleLights(SensorEvent event, boolean isOn) {
+        smartHome.execute(homeObject -> {
+            if (homeObject instanceof Room) {
+                Room room = (Room) homeObject;
+
+                room.execute(roomObject -> {
+                    if (roomObject instanceof Light) {
+                        Light light = (Light) roomObject;
+                        if (light.getId().equals(event.getObjectId())) {
+                            light.setState(isOn);
+                            System.out.println("Light "
+                                    + light.getId()
+                                    + " in room "
+                                    + room.getName()
+                                    + " was turned "
+                                    + (isOn ? "on" : "off"));
+                        }
+                    }
+                });
             }
-        }
+        });
     }
 
-    public void setOffAllLight(SmartHome smartHome) {
-        for (Room homeRoom : smartHome.getRooms()) {
-            for (Light light : homeRoom.getLights()) {
-                light.setState(false);
-                SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
-                SmartHome.sendCommand(command);
-            }
+    @Override
+    public void handle(SensorEvent event) {
+        if (event.getType() == LIGHT_ON) {
+            handleLights(event, true);
+        }
+
+        if (event.getType() == LIGHT_OFF) {
+            handleLights(event, false);
         }
     }
 }
