@@ -1,22 +1,30 @@
 package ru.sbt.mipt.oop;
 
-import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import ru.sbt.mipt.oop.signalization.Signalization;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class SmartHome implements Actionable {
-    Collection<Room> rooms;
+
+    private Collection<Room> rooms;
+    private Signalization signalization;
+
 
     public SmartHome() {
         rooms = new ArrayList<>();
+        this.signalization = new Signalization();
     }
 
     public SmartHome(Collection<Room> rooms) {
         this.rooms = rooms;
+        this.signalization = null;
+    }
+
+    public SmartHome(Collection<Room> rooms, Signalization signalization) {
+        this.rooms = rooms;
+        this.signalization = signalization;
     }
 
     private static boolean isDoor(SensorEvent event) {
@@ -66,6 +74,10 @@ public class SmartHome implements Actionable {
 
     public Collection<Room> getRooms() {
         return rooms;
+    }
+
+    public Signalization getSignalization() {
+        return signalization;
     }
 
     @Override
