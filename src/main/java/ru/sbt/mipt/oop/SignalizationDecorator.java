@@ -18,10 +18,10 @@ public class SignalizationDecorator implements EventHandler {
 
     @Override
     public void handle(SensorEvent event) {
-        if (smartHome.getSignalization().getState() instanceof ActiveState) {
+        if (smartHome.getSignalization().getState() instanceof ActiveState && !(event instanceof SensorSignalizationEvent)) {
             smartHome.getSignalization().activateAlarmMode();
         }
-        if (smartHome.getSignalization().getState() instanceof AlarmState) {
+        if (smartHome.getSignalization().getState() instanceof AlarmState && !(event instanceof SensorSignalizationEvent)) {
             sender.sendSMS();
         } else {
             for (EventHandler eventHandler : eventHandlers) {
