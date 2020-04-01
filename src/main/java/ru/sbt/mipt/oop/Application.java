@@ -1,27 +1,14 @@
 package ru.sbt.mipt.oop;
 
-import ru.sbt.mipt.oop.signalization.Signalization;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
+import com.coolcompany.smarthome.events.SensorEventsManager;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Application {
 
-    public static void main(String... args) throws IOException {
-        Signalization signalization = new Signalization();
-        Sender sender = new Sender();
-        SmartHome smartHome = new SmartHome(Reader.getSmartHome().getRooms(), signalization);
-
-        List<EventHandler> eventHandlers = Arrays.asList(new DoorEventProcessor(smartHome),
-                                                         new LightEventProcessor(smartHome),
-                                                         new HallDoorEventProcessor(smartHome),
-                                                         new SignalizationEventProcessor(smartHome));
-
-        SignalizationDecorator signalizationDecorator = new SignalizationDecorator(smartHome, eventHandlers, sender);
-        SmartHomeHandler smartHomeHandler = new SmartHomeHandler(signalizationDecorator, new GeneratorEvent());
-
-        smartHomeHandler.startHandle();
+    public static void main(String... args) {
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(HomeConfiguration.class);
+        SensorEventsManager sensorEventsManager = applicationContext.getBean(SensorEventsManager.class);
+        sensorEventsManager.start();
     }
 }
