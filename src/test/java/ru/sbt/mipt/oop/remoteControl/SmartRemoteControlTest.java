@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.Map;
 
-public class RemoteControlImplTest {
+public class SmartRemoteControlTest {
     private Door door0 = new Door(true, "0");
     private Door door1 = new Door(false, "1");
     private Door hallDoor = new Door(true, "2");
@@ -28,7 +28,7 @@ public class RemoteControlImplTest {
     @Test
     public void onButtonPressed() {
         String code = "123";
-        RemoteControlImpl remoteControl = new RemoteControlImpl(Map.of("id1", Map.of(
+        SmartRemoteControl remoteControl = new SmartRemoteControl(Map.of("id1", Map.of(
                 "A", new CloseHallDoorCommand(smartHome),
                 "B", new SetActiveStateCommand(smartHome, code),
                 "C", new SetAlarmStateCommand(smartHome),

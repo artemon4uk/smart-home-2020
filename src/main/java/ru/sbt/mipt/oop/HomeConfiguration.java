@@ -3,7 +3,6 @@ package ru.sbt.mipt.oop;
 import com.coolcompany.smarthome.events.SensorEventsManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import rc.RemoteControl;
 import ru.sbt.mipt.oop.remoteControl.*;
 import ru.sbt.mipt.oop.signalization.Signalization;
 
@@ -35,7 +34,7 @@ public class HomeConfiguration {
     }
 
     @Bean
-    String code() {
+    String codeForActivateSignalization() {
         return "default";
     }
 
@@ -61,7 +60,6 @@ public class HomeConfiguration {
 
     @Bean
     List<EventHandler> eventHandlers(SmartHome smartHome) {
-
         return Arrays.asList(doorEventProcessor(smartHome),
                 lightEventProcessor(smartHome),
                 hallDoorEventProcessor(smartHome),
@@ -85,7 +83,7 @@ public class HomeConfiguration {
 
     @Bean
     SetActiveStateCommand setActiveStateCommand(SmartHome smartHome) {
-        return new SetActiveStateCommand(smartHome, code());
+        return new SetActiveStateCommand(smartHome, codeForActivateSignalization());
     }
 
     @Bean
@@ -109,8 +107,8 @@ public class HomeConfiguration {
     }
 
     @Bean
-    RemoteControlImpl remoteControl(SmartHome smartHome) {
-        return new RemoteControlImpl(Map.of("id1", Map.of(
+    SmartRemoteControl remoteControl(SmartHome smartHome) {
+        return new SmartRemoteControl(Map.of("id1", Map.of(
                 "A", closeHallDoorCommand(smartHome),
                 "B", setActiveStateCommand(smartHome),
                 "C", setAlarmStateCommand(smartHome),
