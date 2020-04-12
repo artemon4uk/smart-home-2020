@@ -3,6 +3,7 @@ package ru.sbt.mipt.oop;
 import com.coolcompany.smarthome.events.SensorEventsManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import rc.RemoteControlRegistry;
 import ru.sbt.mipt.oop.remoteControl.*;
 import ru.sbt.mipt.oop.signalization.Signalization;
 
@@ -104,6 +105,13 @@ public class HomeConfiguration {
     @Bean
     SetOnHallLightCommand setOnHallLightCommand(SmartHome smartHome) {
         return new SetOnHallLightCommand(smartHome);
+    }
+
+    @Bean
+    RemoteControlRegistry remoteControlRegistry(SmartHome smartHome) {
+        RemoteControlRegistry remoteControlRegistry = new RemoteControlRegistry();
+        remoteControlRegistry.registerRemoteControl(remoteControl(smartHome), "id1");
+        return remoteControlRegistry;
     }
 
     @Bean
