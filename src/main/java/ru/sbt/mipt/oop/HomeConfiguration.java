@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rc.RemoteControlRegistry;
 import ru.sbt.mipt.oop.remoteControl.*;
+
 import ru.sbt.mipt.oop.signalization.Signalization;
 
 import java.io.IOException;
