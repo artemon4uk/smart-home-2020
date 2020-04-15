@@ -3,6 +3,9 @@ package ru.sbt.mipt.oop;
 import com.coolcompany.smarthome.events.SensorEventsManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import rc.RemoteControlRegistry;
+import ru.sbt.mipt.oop.remoteControl.*;
+
 import ru.sbt.mipt.oop.signalization.Signalization;
 
 import java.io.IOException;
@@ -33,6 +36,11 @@ public class HomeConfiguration {
     }
 
     @Bean
+    String codeForActivateSignalization() {
+        return "default";
+    }
+
+    @Bean
     EventHandler doorEventProcessor(SmartHome smartHome) {
         return new DoorEventProcessor(smartHome);
     }
@@ -54,7 +62,6 @@ public class HomeConfiguration {
 
     @Bean
     List<EventHandler> eventHandlers(SmartHome smartHome) {
-
         return Arrays.asList(doorEventProcessor(smartHome),
                 lightEventProcessor(smartHome),
                 hallDoorEventProcessor(smartHome),
@@ -69,6 +76,55 @@ public class HomeConfiguration {
     @Bean
     SensorEventsManagerAdapter sensorEventsManagerAdapter(EventHandler eventHandler) {
         return new SensorEventsManagerAdapter(eventHandler, stringToType());
+    }
+
+    @Bean
+    CloseHallDoorCommand closeHallDoorCommand(SmartHome smartHome) {
+        return new CloseHallDoorCommand(smartHome);
+    }
+
+    @Bean
+    SetActiveStateCommand setActiveStateCommand(SmartHome smartHome) {
+        return new SetActiveStateCommand(smartHome, codeForActivateSignalization());
+    }
+
+    @Bean
+    SetAlarmStateCommand setAlarmStateCommand(SmartHome smartHome) {
+        return new SetAlarmStateCommand(smartHome);
+    }
+
+    @Bean
+    SetOffAllLightsCommand setOffAllLightsCommand(SmartHome smartHome) {
+        return new SetOffAllLightsCommand(smartHome);
+    }
+
+    @Bean
+    SetOnAllLightsCommand setOnAllLightsCommand(SmartHome smartHome) {
+        return new SetOnAllLightsCommand(smartHome);
+    }
+
+    @Bean
+    SetOnHallLightCommand setOnHallLightCommand(SmartHome smartHome) {
+        return new SetOnHallLightCommand(smartHome);
+    }
+
+    @Bean
+    RemoteControlRegistry remoteControlRegistry(SmartHome smartHome) {
+        RemoteControlRegistry remoteControlRegistry = new RemoteControlRegistry();
+        remoteControlRegistry.registerRemoteControl(remoteControl(smartHome), "id1");
+        return remoteControlRegistry;
+    }
+
+    @Bean
+    SmartRemoteControl remoteControl(SmartHome smartHome) {
+        return new SmartRemoteControl(Map.of("id1", Map.of(
+                "A", closeHallDoorCommand(smartHome),
+                "B", setActiveStateCommand(smartHome),
+                "C", setAlarmStateCommand(smartHome),
+                "1", setOffAllLightsCommand(smartHome),
+                "2", setOnAllLightsCommand(smartHome),
+                "3", setOnHallLightCommand(smartHome)
+        )));
     }
 
     @Bean
